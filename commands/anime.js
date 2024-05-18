@@ -1,9 +1,14 @@
+/**
+ * SLASH COMMAND INFO: /anime [title]
+ *      -> Returns an embed containing information about an anime
+ *      -> Synopsis, Score, Status, and Episodes
+ */
+
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js'); 
-const axios = require('axios'); // for HTTP requests 
+const axios = require('axios'); // For HTTP requests 
 const config = require('../config.json');
-
-const MAL_API_URL = 'https://api.myanimelist.net/v2/anime';
+const { fetchAnime } = require('../utils/fetchAnime'); // Fetch anime from MAL
 
 module.exports = {
 
@@ -21,48 +26,21 @@ module.exports = {
 
         // Get the user-entered title of the anime
         const title = interaction.options.getString('title');
-
-        // Get MAL client ID
-        const MAL_CLIENT_ID = config.MALclientId;
-
         console.log(`Fetching anime info for: ${title}`);
 
         try {
-            // GET request to MAL API
-            const response = await axios.get(MAL_API_URL, {
-                params: {
-                    // Query parameter, title of the anime
-                    q: title, 
-
-                    // Limiting the result to 1
-                    limit: 1, 
-
-                    // Fields to retreive (by default the API doesn't return all fields)
-                    fields: 'id,title,main_picture,synopsis,mean,status,num_episodes' 
-                },
-                headers: {
-                    'X-MAL-CLIENT-ID': MAL_CLIENT_ID // provide MAL client ID in headers
-                }
-            });
+            // Fetch anime data from MAL
+            const anime = await fetchAnime(title);
 
             // If no data / empty data
-            if (!response.data || !response.data.data || response.data.data.length === 0) {
+            //     -> Handle this error here where you have access to the interaction object
+            if (!anime) {
                 return interaction.reply('No anime found with that title.');
             }
 
-            /**
-             * Extract anime info. from the response
-             *      response ==> object returned by axios GET request
-             *      response.data ==> data property of response object, holds data returned by MAL API
-             *      response.data.data ==> MAL response data has a data property containing main payload
-             *      response.data.data[0] ==> first element of response.data.data (response limited to 1)
-             *      .node ==> access specific details of the anime under response.data.data[0]
-             */
-            const anime = response.data.data[0].node;
-
             // Embed to display the info.
             const embed = new EmbedBuilder()
-                .setColor('#282b30')
+                .setColor('#2C2F33')
                 .setTitle(anime.title || 'Title not available')
                 .setURL(`https://myanimelist.net/anime/${anime.id}`)
                 .setDescription(anime.synopsis || 'No synopsis available')
@@ -78,8 +56,6 @@ module.exports = {
             return interaction.reply({ embeds: [embed] });
 
         } catch (error) {
-            // Error during fetching data
-            console.error('Error fetching anime data:', error.response ? error.response.data : error.message);
             return interaction.reply('Error fetching anime data.');
         }
     },
