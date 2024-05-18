@@ -62,7 +62,7 @@ module.exports = {
 
             // Embed to display the info.
             const embed = new EmbedBuilder()
-                .setColor('#0099ff')
+                .setColor('#282b30')
                 .setTitle(anime.title || 'Title not available')
                 .setURL(`https://myanimelist.net/anime/${anime.id}`)
                 .setDescription(anime.synopsis || 'No synopsis available')
