@@ -6,8 +6,6 @@
 
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js'); 
-const axios = require('axios'); // For HTTP requests 
-const config = require('../config.json');
 const { fetchAnime } = require('../utils/fetchAnime'); // Fetch anime from MAL
 
 module.exports = {

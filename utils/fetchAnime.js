@@ -4,7 +4,7 @@
  *      -> Returns an object containing anime info. fields (like title, synopsis, mean, status, etc.)
  */
 
-const axios = require('axios');
+const axios = require('axios'); // for HTTP requests
 const config = require('../config.json');
 
 const MAL_API_URL = 'https://api.myanimelist.net/v2/anime';
