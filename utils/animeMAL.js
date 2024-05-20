@@ -6,9 +6,14 @@ const axios = require('axios'); // for HTTP requests
 const config = require('../config.json');
 
 const MAL_API_BASE_URL = 'https://api.myanimelist.net/v2';
-
 const MAL_CLIENT_ID = config.MALclientId;
 
+/**
+ * Fetches information about an anime from MyAnimeList API based on the provided title.
+ * @param {string} title - The title of the anime to search for.
+ * @returns {Promise<object>} A promise that resolves to an object containing anime information.
+ * @throws {Error} Throws an error if fetching anime data fails.
+ */
 async function fetchAnime(title) {
     
     try {
@@ -38,6 +43,12 @@ async function fetchAnime(title) {
     }
 }
 
+/**
+ * Fetches the top ten anime in a specified category from MyAnimeList API.
+ * @param {string} category - The category of the top ten anime to fetch.
+ * @returns {Promise<object[]>} A promise that resolves to an array of objects containing top ten anime information.
+ * @throws {Error} Throws an error if fetching top ten anime data fails.
+ */
 async function fetchTopTen(category) {
     try {
         // GET request to MAL API for top ten anime in the given category
