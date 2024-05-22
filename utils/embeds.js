@@ -5,6 +5,34 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 /**
+ * Creates a standard embed with the provided format.
+ * @param {string} title - The title of the embed.
+ * @param {string} description - The description of the embed.
+ * @param {string} thumbnail - URL of the thumbnail image.
+ * @param {object[]} fields - Array of field objects {name, value, inline}.
+ * @param {string} footerText - The text for the footer.
+ */
+function genericEmbed(title, description, thumbnail, fields, footerText) {
+    const embed = new EmbedBuilder()
+        .setColor('#2F52A2')
+        .setTitle(title || 'Title not available')
+        .setDescription(description || 'No description available')
+        .setThumbnail(thumbnail || 'https://myanimelist.net/images/mal-logo-xsmall.png');
+
+    if (fields && fields.length > 0) {
+        fields.forEach(field => {
+            embed.addFields(field);
+        });
+    }
+
+    if (footerText) {
+        embed.setFooter({ text: footerText });
+    }
+
+    return embed;
+}
+
+/**
  * Creates paginated embeds and manages pagination interaction.
  * @param {object} interaction - The interaction object.
  * @param {object[]} items - The items to be displayed in the embeds.
@@ -15,12 +43,13 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 async function paginatedEmbed(interaction, items, itemsPerPage, title, formatItem) {
 
     const embeds = []; // To store embed pages
+    const thumbnail = 'https://myanimelist.net/images/mal-logo-xsmall.png'; // MAL logo 
 
     // Loop through items, create embeds for each page
     for (let i = 0; i < items.length; i += itemsPerPage) { // Slice the items array to get items for the current page
         const currentItems = items.slice(i, i + itemsPerPage);
         const embed = new EmbedBuilder()
-            .setColor('#2C2F33')
+            .setColor('#2F52A2')
             .setTitle(title)
             .setFooter({ text: `Page ${i / itemsPerPage + 1} of ${Math.ceil(items.length / itemsPerPage)}` });
 
@@ -30,13 +59,16 @@ async function paginatedEmbed(interaction, items, itemsPerPage, title, formatIte
             embed.addFields(formatItem(item, index + 1 + i));
         });
 
+        // Set the MAL logo as the thumbnail for each page
+        embed.setThumbnail(thumbnail);
+
         // Add the embed to the array
         embeds.push(embed);
     }
 
     let currentPage = 0; // Pg. index
 
-    // Create an action row (row for interactive components) with pagination buttons
+    // Create an action row (row for interactive components) with page buttons
     const getRow = (page) => new ActionRowBuilder()
 
         .addComponents(
@@ -90,4 +122,4 @@ async function paginatedEmbed(interaction, items, itemsPerPage, title, formatIte
     });
 }
 
-module.exports = { paginatedEmbed };
+module.exports = { genericEmbed, paginatedEmbed };
