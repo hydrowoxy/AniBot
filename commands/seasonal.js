@@ -4,7 +4,7 @@
  */
 
 const { SlashCommandBuilder } = require('discord.js');
-const { fetchSeasonalAnime } = require('../utils/animeMAL');
+const { fetchSeasonalAnime } = require('../utils/anime');
 const { paginatedEmbed } = require('../utils/embeds');
 
 module.exports = {

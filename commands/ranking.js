@@ -5,7 +5,7 @@
  */
 
 const { SlashCommandBuilder } = require('discord.js');
-const { fetchRanking } = require('../utils/animeMAL');
+const { fetchRanking } = require('../utils/anime');
 const { paginatedEmbed } = require('../utils/embeds');
 
 module.exports = {

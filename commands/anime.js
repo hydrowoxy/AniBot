@@ -5,7 +5,7 @@
  */
 
 const { SlashCommandBuilder } = require('discord.js');
-const { fetchAnime } = require('../utils/animeMAL'); // Fetch anime from MAL
+const { fetchAnime } = require('../utils/anime'); // Fetch anime from MAL
 const { genericEmbed } = require('../utils/embeds');
 
 module.exports = {  
