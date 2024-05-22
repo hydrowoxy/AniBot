@@ -1,11 +1,11 @@
 /**
- * FOR ALL UTILS RELATED TO FETCHING ANIME INFO FROM MAL API
+ * For utils related to fetching ANIME INFO from MAL API
 */
 
-const axios = require('axios'); // for HTTP requests
+const axios = require('axios'); // For HTTP requests
 const config = require('../config.json');
 
-const MAL_API_BASE_URL = 'https://api.myanimelist.net/v2';
+const ANI_BASE_URL = 'https://api.myanimelist.net/v2/anime'; // Base URL for anime-related stuff
 const MAL_CLIENT_ID = config.MALclientId;
 
 /**
@@ -18,7 +18,7 @@ async function fetchAnime(title) {
     
     try {
         // GET request to MAL API
-        const response = await axios.get(`${MAL_API_BASE_URL}/anime`, {
+        const response = await axios.get(`${ANI_BASE_URL}`, {
             params: {
                 // Query parameter, title of the anime
                 q: title,
@@ -30,7 +30,7 @@ async function fetchAnime(title) {
                 fields: 'id,title,main_picture,synopsis,mean,status,num_episodes'
             },
             headers: {
-                'X-MAL-CLIENT-ID': MAL_CLIENT_ID // provide MAL client ID in headers
+                'X-MAL-CLIENT-ID': MAL_CLIENT_ID // Provide MAL client ID in header
             }
         });
 
@@ -44,31 +44,24 @@ async function fetchAnime(title) {
 }
 
 /**
- * Fetches the top ten anime in a specified category from MyAnimeList API.
- * @param {string} category - The category of the top ten anime to fetch.
- * @returns {Promise<object[]>} A promise that resolves to an array of objects containing top ten anime information.
- * @throws {Error} Throws an error if fetching top ten anime data fails.
+ * Fetches the rankings for anime in a specified category from MyAnimeList API (max.100)
+ * @param {string} category - The category of the anime to fetch.
+ * @returns {Promise<object[]>} A promise that resolves to an array of objects containing anime information.
+ * @throws {Error} Throws an error if fetching ranked anime data fails.
  */
-async function fetchTopTen(category) {
+async function fetchRanking(category) {
     try {
-        // GET request to MAL API for top ten anime in the given category
-        const response = await axios.get(`${MAL_API_BASE_URL}/anime/ranking`, {
+        const response = await axios.get(`${ANI_BASE_URL}/ranking`, {
             params: {
-                // Ranking type parameter
                 ranking_type: category,
-
-                // Limiting the result to 10
-                limit: 10,
-
-                // Fields to retrieve
+                limit: 100,
                 fields: 'id,title,mean'
             },
             headers: {
-                'X-MAL-CLIENT-ID': MAL_CLIENT_ID // provide MAL client ID in headers
+                'X-MAL-CLIENT-ID': MAL_CLIENT_ID 
             }
         });
 
-        // Extract the list of top ten anime from the response
         return response.data.data.map(item => item.node);
 
     } catch (error) {
@@ -77,5 +70,30 @@ async function fetchTopTen(category) {
     }
 }
 
-module.exports = { fetchAnime, fetchTopTen };
+/**
+ * Fetches the seasonal anime from MyAnimeList API for the specified season and year.
+ * @param {string} season - The season (winter, spring, summer, fall).
+ * @param {number} year - The year.
+ * @returns {Promise<object[]>} A promise that resolves to an array of objects containing seasonal anime information.
+ * @throws {Error} Throws an error if fetching seasonal anime data fails.
+ */
+async function fetchSeasonalAnime(season, year) {
+    try {
+        const response = await axios.get(`${ANI_BASE_URL}/season/${year}/${season}`, {
+            params: {
+                fields: 'id,title,mean'
+            },
+            headers: {
+                'X-MAL-CLIENT-ID': MAL_CLIENT_ID
+            }
+        });
 
+        return response.data.data.map(item => item.node);
+
+    } catch (error) {
+        console.error('Error fetching seasonal anime data:', error.response ? error.response.data : error.message);
+        throw new Error('Error fetching seasonal anime data');
+    }
+}
+
+module.exports = { fetchAnime, fetchRanking, fetchSeasonalAnime };

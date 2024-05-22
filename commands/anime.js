@@ -27,7 +27,7 @@ module.exports = {
         console.log(`Fetching anime info for: ${title}`);
 
         try {
-            // Fetch anime data from MAL
+            // Get data from MAL
             const anime = await fetchAnime(title);
 
             // If no data / empty data
