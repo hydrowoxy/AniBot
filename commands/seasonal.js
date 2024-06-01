@@ -13,7 +13,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('seasonal')
         .setDescription('Fetches seasonal anime from MyAnimeList.')
-        .addStringOption(option => 
+        .addStringOption(option =>
             option.setName('season')
                 .setDescription('The season (winter, spring, summer, fall)')
                 .setRequired(true)
