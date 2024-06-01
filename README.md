@@ -1,2 +1,2 @@
-# anibot
-Discord bot to get info. about anime
+# AniBot
+Discord bot to get informaton about anime using the MyAnimeList API
